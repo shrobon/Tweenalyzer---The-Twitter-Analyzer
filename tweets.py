@@ -10,6 +10,14 @@ import numpy as np
 import configurations 
 import pandas as pd
 
+def limit_handled(cursor):
+    while True:
+        try:
+            yield cursor.next()
+        except tweepy.RateLimitError:
+            time.sleep(15 * 60)
+
+
 def QueryTwitter(search_string):
 	
 	#Fetching the Configuration Settings
