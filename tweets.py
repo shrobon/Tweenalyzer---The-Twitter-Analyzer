@@ -11,6 +11,7 @@ import configurations
 import pandas as pd
 import time 
 import sys 
+#from langdetect import detect
 
 #We will be using TextBlob for Sentiment Analysis
 #TextBlob is also used for text translation
@@ -58,7 +59,7 @@ def QueryTwitter(search_string):
 	api = tweepy.API(auth)
 
 	tweet_list = []
-	for tweet in limit_handled(tweepy.Cursor(api.search,q=search_string).items(10)):
+	for tweet in limit_handled(tweepy.Cursor(api.search,q=search_string).items(150)):
 		tweet_list.append(tweet)
 
 	#We now extract details from the tweet and get the resultant DataFrame
@@ -95,6 +96,7 @@ def filter_tweets(tweets):
 	tweet_text_list = []
 	tweet_location_list = []
 	tweet_lat_lng_list = []
+	tweet_language = []
 
 
 	for tweet in tweets:
@@ -111,14 +113,30 @@ def filter_tweets(tweets):
 
 
 
-		#Detecting and Changing the language to english
+		#Detecting and Changing the language to english for sentiment analysis
 		lang = message.detect_language()
-
+		tweet_language.append(str(lang))
 		if lang != u"en":
 			message = message.translate(to='en')
 
+		#### Special Character removal #####
+		message = str(message)
+		new_message = ""
+		for letter in range(0,len(message)):
+			current_read =message[letter]
+			if ord(current_read) > 126:
+				#this is a special character & hence will be skipped
+				continue
+			else:
+				new_message =new_message+current_read
+
+		message = new_message
+		message = TextBlob(message)
+		######################################
+
 		#Changing the Language is important
 		#Since it will help in sentiment analysis using TextBlob
+		#When language is english remove special characters :: heavily affects analysis
 		sentiment = message.sentiment.polarity
 		subjectivity = message.sentiment.subjectivity
 
@@ -133,6 +151,7 @@ def filter_tweets(tweets):
 	tweet_Data["location"] = tweet_location_list
 	tweet_Data["text"] = tweet_text_list
 	tweet_Data["coordinates"]=tweet_lat_lng_list
+	tweet_Data["language"] =tweet_language
 
 	
 

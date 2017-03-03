@@ -1,8 +1,16 @@
 1. Sort by gender
 2. Sort by Location : from mpl_toolkits.basemap import Basemap
 3. Sentiment Analysis
+4. Using Language detect package:::  langdetect 1.0.7
+5. better santitize the tweets :
+		if language is in english then :::>>>> sanitize in : 
+6. better define subjective and objective scores
+7. Check if ignorecase if possible
 
 Difficulties
 1. Location might contain null , wrong info 
-2. Sentiment analysis triggered by language
+2. Sentiment analysis triggered by language (conversion is always not appropriate)
 3. language translate into string not possible
+4. Sometimes people write their native language converted into english (wrong sentiment analysis)
+5. Sometimes happiness is expressed using smiley's. They arent properly analysed.
+6. special characters matter ::--> 837471088674222080 , remove the canada leaf and it turns to positive sentiment
