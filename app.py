@@ -6,9 +6,16 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-	#tweetsDataframe=QueryTwitter("Python")
+	tweetsDataframe=QueryTwitter("Python")
+	#parse all the relevant information here and send to index.html
 	#return tweetsDataframe.to_html()
-	return render_template('index.html')
+	country = tweetsDataframe['country']
+	latitude = tweetsDataframe['latitude']
+	longitude = tweetsDataframe['longitude']
+	language = tweetsDataframe['language']
+	subjectivity_group = tweetsDataframe['subjectivity_group']
+	sentiments_group = tweetsDataframe['sentiments_group']
+	return render_template('index.html',country=country,latitude=latitude,longitude=longitude,language=language,subjectivity_group=subjectivity_group,sentiments_group=sentiments_group)
 
 
 if __name__ == "__main__":

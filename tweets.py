@@ -37,9 +37,20 @@ def limit_handled(cursor):
         	break
 
 
+'''
+def make_maps(tweet_Data):
+	#This function will return the data as required by google maps
+	country = tweetsDataframe['country']
+	latitude = tweetsDataframe['latitude']
+	longitude = tweetsDataframe['longitude']
+	language = tweetsDataframe['language']
+	subjectivity_group = tweetsDataframe['subjectivity_group']
+	sentiments_group = tweetsDataframe['sentiments_group']
 
-
-
+	#for pointer map 1
+	for i in length(tweetsDataframe):
+		pass
+'''
 
 
 def QueryTwitter(search_string):
@@ -59,13 +70,14 @@ def QueryTwitter(search_string):
 	api = tweepy.API(auth)
 
 	tweet_list = []
-	for tweet in limit_handled(tweepy.Cursor(api.search,q=search_string).items(150)):
+	for tweet in limit_handled(tweepy.Cursor(api.search,q=search_string).items(10)):
 		tweet_list.append(tweet)
 
 	#We now extract details from the tweet and get the resultant DataFrame
 	tweet_Data = filter_tweets(tweet_list)
 
 
+	#tup_map_data = make_maps(tweet_Data)
 	return tweet_Data
 
 
@@ -92,11 +104,19 @@ def filter_tweets(tweets):
 
 
 	Sentiments_list = []
+	Sentiments_group = []
+
 	Subjectivity_list = []
+	Subjectivity_group = []
+
 	tweet_text_list = []
 	tweet_location_list = []
-	tweet_lat_lng_list = []
+
 	tweet_language = []
+	tweet_latitude = []
+	tweet_longitude =[]
+	tweet_country = []
+
 
 
 	for tweet in tweets:
@@ -105,10 +125,15 @@ def filter_tweets(tweets):
 		location = tweet.author.location
 		# location can be null :: We have to handle that too 
 		if len(location) !=0:
-			formatted = geocode_location(location)
-			tweet_lat_lng_list.append(formatted)
+			(latitude,longitude,country) = geocode_location(location)
+			tweet_latitude.append(latitude)
+			tweet_longitude.append(longitude)
+			tweet_country.append(country)
+
 		else:
-			tweet_lat_lng_list.append("")
+			tweet_latitude.append("")
+			tweet_longitude.append("")
+			tweet_country.append("")
 
 
 
@@ -116,8 +141,8 @@ def filter_tweets(tweets):
 		#Detecting and Changing the language to english for sentiment analysis
 		lang = message.detect_language()
 		tweet_language.append(str(lang))
-		if lang != u"en":
-			message = message.translate(to='en')
+		if str(lang) != "en":
+			message = message.translate(to="en")
 
 		#### Special Character removal #####
 		message = str(message)
@@ -138,7 +163,23 @@ def filter_tweets(tweets):
 		#Since it will help in sentiment analysis using TextBlob
 		#When language is english remove special characters :: heavily affects analysis
 		sentiment = message.sentiment.polarity
+		if (sentiment > 0):
+			#postive
+			Sentiments_group.append('positive')
+		elif (sentiment < 0):
+			#Negative
+			Sentiments_group.append('negative')
+		else:
+			Sentiments_group.append('neutral')
+
+
+
 		subjectivity = message.sentiment.subjectivity
+		if (subjectivity > 0.4):
+			#subjective ::: Long tweet
+			Subjectivity_group.append('subjective')
+		else:
+			Subjectivity_group.append('objective')
 
 		Sentiments_list.append(sentiment)
 		Subjectivity_list.append(subjectivity)
@@ -147,11 +188,18 @@ def filter_tweets(tweets):
 
 
 	tweet_Data["sentiments"] = Sentiments_list
+	tweet_Data["sentiments_group"] = Sentiments_group
+
 	tweet_Data["subjectivity"]= Subjectivity_list
+	tweet_Data["subjectivity_group"] = Subjectivity_group
+
 	tweet_Data["location"] = tweet_location_list
 	tweet_Data["text"] = tweet_text_list
-	tweet_Data["coordinates"]=tweet_lat_lng_list
-	tweet_Data["language"] =tweet_language
+
+	tweet_Data["language"] = tweet_language
+	tweet_Data["latitude"] = tweet_latitude
+	tweet_Data["longitude"]= tweet_longitude
+	tweet_Data["country"] = tweet_country
 
 	
 
@@ -173,13 +221,14 @@ def geocode_location(loc):
 		#means that atleast something was returned
 		latitude = location_result[0]['geometry']['location']['lat']
 		longitude= location_result[0]['geometry']['location']['lng']
-		formatted = "["+str(latitude)+","+str(longitude)+"]"
-		return formatted
+		country =location_result[0]['formatted_address'].split(",")
+		country = str(country[len(country)-1]) 		
+		return (str(latitude),str(longitude),country)
 		
 
 	else:
 		#store null
-		return ""
+		return ("","","")
 	
 	return
 	##################################################################
