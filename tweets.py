@@ -79,14 +79,6 @@ def QueryTwitter(search_string):
 # Snetiment Analysis
 def filter_tweets(tweets):
 
-	#Importing the API key for Google Geocode
-	gmaps_api = configurations.google_maps_key
-
-	#Registering our app by sending the API key 
-	gm = googlemaps.Client(key=gmaps_api)
-
-
-
 
 	id_list = [tweet.id for tweet in tweets]
 	#Will contain a single column table containing all the tweet ids
@@ -109,25 +101,15 @@ def filter_tweets(tweets):
 		raw_tweet_text = tweet.text
 		message = TextBlob(unicode(tweet.text))
 		location = tweet.author.location
-
-		##################################################################
-		#We need to geocode this location and store it as lat and longtitude
-		location_result = gm.geocode(str(location))
-		
-		'''
-
-		if len(location_result) > 0:
-			#means that atleast something was returned
-			latitude = location_result[0]['geometry']['location']['lat']
-			longitude= location_result[0]['geometry']['location']['lng']
-			formatted = "["+str(latitude)+","+str(longitude)+"]"
-			tweet_location_list.append(formatted)
-
+		# location can be null :: We have to handle that too 
+		if len(location) !=0:
+			formatted = geocode_location(location)
+			tweet_lat_lng_list.append(formatted)
 		else:
-			#store null
-			tweet_lat_lng_list.append("Null")
-		'''
-		##################################################################
+			tweet_lat_lng_list.append("")
+
+
+
 
 		#Detecting and Changing the language to english
 		lang = message.detect_language()
@@ -150,10 +132,35 @@ def filter_tweets(tweets):
 	tweet_Data["subjectivity"]= Subjectivity_list
 	tweet_Data["location"] = tweet_location_list
 	tweet_Data["text"] = tweet_text_list
-	#tweet_Data["coordinates"]=tweet_lat_lng_list
+	tweet_Data["coordinates"]=tweet_lat_lng_list
 
 	
 
 	#Let us calculate the sentiment scores
 
 	return tweet_Data
+
+def geocode_location(loc):
+	#Importing the API key for Google Geocode
+	gmaps_api = configurations.google_maps_key
+
+	#Registering our app by sending the API key 
+	gm = googlemaps.Client(key=gmaps_api)
+
+	##################################################################
+	#We need to geocode this location and store it as lat and longtitude
+	location_result = gm.geocode(loc)
+	if len(location_result) > 0:
+		#means that atleast something was returned
+		latitude = location_result[0]['geometry']['location']['lat']
+		longitude= location_result[0]['geometry']['location']['lng']
+		formatted = "["+str(latitude)+","+str(longitude)+"]"
+		return formatted
+		
+
+	else:
+		#store null
+		return ""
+	
+	return
+	##################################################################
