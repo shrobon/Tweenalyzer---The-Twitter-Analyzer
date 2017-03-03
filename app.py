@@ -1,12 +1,15 @@
 from flask import Flask, render_template
 from tweets import QueryTwitter
+import pandas as pd 
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-	tweets_fetched=QueryTwitter("Python")
-	return str(tweets_fetched)
+	tweetsDataframe=QueryTwitter("Python")
+
+	return tweetsDataframe.to_html()
+	#return tweetsDataframe
 	#return "Hello World"
 
 

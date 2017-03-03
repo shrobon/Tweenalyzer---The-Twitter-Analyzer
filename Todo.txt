@@ -1,0 +1,8 @@
+1. Sort by gender
+2. Sort by Location : from mpl_toolkits.basemap import Basemap
+3. Sentiment Analysis
+
+Difficulties
+1. Location might contain null , wrong info 
+2. Sentiment analysis triggered by language
+3. language translate into string not possible
