@@ -14,3 +14,11 @@ Difficulties
 4. Sometimes people write their native language converted into english (wrong sentiment analysis)
 5. Sometimes happiness is expressed using smiley's. They arent properly analysed.
 6. special characters matter ::--> 837471088674222080 , remove the canada leaf and it turns to positive sentiment
+
+Plots
+1. Languages
+2. GeoPlot
+3. Top 5 countries 
+4. Polarity Scores
+5. Subjectivity Scores
+6. ~~ if possible :: Do popularity measure 
