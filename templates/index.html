@@ -7,26 +7,56 @@
   <link rel="stylesheet" type="text/css" href="../static/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="../static/assets/css/keen-dashboards.css" />
 
-  <!--Map 1 -->
+
+
+
+
+
+
+
+
+
+  <!--Map 1-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load("current", {packages:["corechart"]});
+      google.charts.load('current', {'packages': ['geochart','corechart']});
+      google.charts.setOnLoadCallback(drawMarkersMap);
       google.charts.setOnLoadCallback(drawChart);
+      
+
+        function drawMarkersMap() {
+        var data = new google.visualization.arrayToDataTable([
+          ['Country',   'Population', 'Area Percentage'],
+          ['France',  65700000, 50],
+          ['Germany', 81890000, 27],
+          ['Poland',  38540000, 23]
+        ]);
+
+        var options = {
+          sizeAxis: { minValue: -1, maxValue: 1 },
+          region: '155', // Western Europe
+          displayMode: 'markers',
+          colorAxis: {colors: ['#ff0000', '#0011ff']} // orange to blue
+        };
+
+        var chart = new google.visualization.GeoChart(document.getElementById('grid-1-1'));
+        chart.draw(data, options);
+      }
+
+      //Map 2 Donut:: Language
       function drawChart() {
-        var data = google.visualization.arrayToDataTable({{doughnut|safe}});
+        var data = new google.visualization.arrayToDataTable({{doughnut|safe}});
         var options = {
           title: 'Tweet language',
-          pieHole: 0.4,
+          pieHole: 0.3,
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
         chart.draw(data, options);
       }
+
+
     </script>
-
-
-
-
 
 
 </head>
@@ -63,32 +93,29 @@
       <div class="col-sm-8">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Cell Title
+            Tweet Distribution Map
           </div>
           <div class="chart-stage">
             <div id="grid-1-1">
-
-              <img data-src="holder.js/100%x240/white/text:#grid-1-1">
             </div>
           </div>
           <div class="chart-notes">
-
-
              
-            Notes about this chart
+            Blue hue denotes positive tweet , while Red hue denotes negative tweets.
+            -1 Sentiment score means negative while 1 means positive sentiment
           </div>
         </div>
       </div>
       <div class="col-sm-4">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Cell Title
+            Tweet Language Analysis
           </div>
-          <div class="chart-stage" id="donutchart">
+          <div class="chart-stage" id="donutchart" style="width:368; height:240">
 
           </div>
           <div class="chart-notes">
-            Notes about this chart
+            Makes you aware of which languages you show translate your content.
           </div>
         </div>
       </div>

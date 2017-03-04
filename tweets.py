@@ -41,6 +41,8 @@ def limit_handled(cursor):
 def make_maps(tweetsDataframe):
 	#This function will return the data as required by google maps
 	doughnut = []
+	sentiment_map = []
+
 	########################################
 	#for the language plot :: dougnut chart
 	doughnut.append(["Language","Tweets"])
@@ -52,18 +54,23 @@ def make_maps(tweetsDataframe):
 	########################################
 
 
-	'''
+
+	########################################
+	#for the sentiment_map plot :: geochart
+	sentiment_map.append(['Lat', 'Long', 'Sentiments'])
 	for i in range(0,len(tweetsDataframe)):
-		country = tweetsDataframe['country'][i]
+
+		temp= []
 		latitude = tweetsDataframe['latitude'][i]
-		language = tweetsDataframe['language'][i]
-		subjectivity_group = tweetsDataframe['subjectivity_group'][i]
-		sentiments_group = tweetsDataframe['sentiments_group'][i]
-		
-	'''
+		longitude = tweetsDataframe['longitude'][i]
+		sentiment = tweetsDataframe['sentiments'][i]
+		if sentiment >=-1 and sentiment <=1:
+			temp = [latitude,longitude,sentiment]
+			sentiment_map.append(temp)
 
-	return doughnut
-
+	
+	########################################
+	return (doughnut,sentiment_map)
 
 def QueryTwitter(search_string):
 
@@ -89,9 +96,9 @@ def QueryTwitter(search_string):
 	tweet_Data = filter_tweets(tweet_list)
 
 
-	tup_map_data = make_maps(tweet_Data)
+	(doughnut,sentiment_map) = make_maps(tweet_Data)
 	#return tweet_Data
-	return tup_map_data
+	return (doughnut,sentiment_map)
 
 
 
@@ -154,8 +161,11 @@ def filter_tweets(tweets):
 		#Detecting and Changing the language to english for sentiment analysis
 		lang = message.detect_language()
 		tweet_language.append(str(lang))
-		if str(lang) != "en":
-			message = message.translate(to="en")
+		try:
+			if str(lang) != "en":
+				message = message.translate(to="en") #Problem Here
+		except:
+			pass
 
 		#### Special Character removal #####
 		message = str(message)
@@ -235,7 +245,7 @@ def geocode_location(loc):
 		latitude = location_result[0]['geometry']['location']['lat']
 		longitude= location_result[0]['geometry']['location']['lng']
 		country =location_result[0]['formatted_address'].split(",")
-		country = str(country[len(country)-1]) 		
+		country = country[len(country)-1]		# there arises a problem here
 		return (str(latitude),str(longitude),country)
 		
 
