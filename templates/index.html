@@ -19,9 +19,10 @@
   <!--Map 1-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load('current', {'packages': ['geochart','corechart']});
+      google.charts.load('current', {'packages': ['geochart','corechart','bar']});
       google.charts.setOnLoadCallback(drawChart);
       google.charts.setOnLoadCallback(drawVisualization);
+      google.charts.setOnLoadCallback(drawBasic);
 
         function drawVisualization() {var data = new google.visualization.DataTable();
            data.addColumn('number', 'LATITUDE');                                
@@ -64,6 +65,29 @@
         var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
         chart.draw(data, options);
       }
+
+
+      //Map 3 Column Chart :: Sources
+function drawBasic() {
+
+      var data = google.visualization.arrayToDataTable({{sources_plot|safe}});
+
+      var options = {
+        title: 'Top 5 Twitter Platforms',
+        chartArea: {width: '50%'},
+        hAxis: {
+          title: 'Number of users',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Twitter Application Platforms'
+        }
+      };
+
+      var chart = new google.visualization.BarChart(document.getElementById('bar-chart'));
+
+      chart.draw(data, options);
+    }
 
 
     </script>
@@ -121,11 +145,11 @@
           <div class="chart-title">
             Tweet Language Analysis
           </div>
-          <div class="chart-stage" id="donutchart" style="width:368; height:240">
+          <div class="chart-stage" id="donutchart" >
 
           </div>
           <div class="chart-notes">
-            Makes you aware of which languages you show translate your content.
+            Makes you aware of which languages are used by the queried users
           </div>
         </div>
       </div>
@@ -135,10 +159,9 @@
       <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Cell Title
+            Top 5 Tweeting Client Platforms
           </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
+          <div class="chart-stage" id="bar-chart" >
           </div>
           <div class="chart-notes">
             Notes about this chart
@@ -217,7 +240,7 @@
 
     <hr>
 
-    <p class="small text-muted">Built with &#9829; by <a href="https://keen.io">Keen IO</a></p>
+    <p class="small text-muted">Built with &#9829; and Hard-Work by Shrobon Biswas & Damayanti Ghosh </p>
 
   </div>
 

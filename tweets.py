@@ -42,6 +42,7 @@ def make_maps(tweetsDataframe):
 	#This function will return the data as required by google maps
 	doughnut = []
 	sentiment_map = []
+	sources_plot = []
 
 	########################################
 	#for the language plot :: dougnut chart
@@ -52,6 +53,21 @@ def make_maps(tweetsDataframe):
 		temp = [key,value]
 		doughnut.append(temp)
 	########################################
+
+
+
+	########################################
+	#for the sources plot :: 
+	#doughnut.append(["Language","Tweets"])
+	sources_plot.append(["Twitter Client","Users"])
+	source_count = tweetsDataframe["source"].value_counts()[:5][::-1]
+	source_count= source_count.to_dict()
+	for key,value in source_count.iteritems():
+		temp = [key,value]
+		sources_plot.append(temp)
+	########################################
+
+
 
 
 
@@ -75,7 +91,7 @@ def make_maps(tweetsDataframe):
 
 	
 	########################################
-	return (doughnut,sentiment_map)
+	return (doughnut,sentiment_map,sources_plot)
 
 def QueryTwitter(search_string):
 
@@ -94,16 +110,16 @@ def QueryTwitter(search_string):
 	api = tweepy.API(auth)
 
 	tweet_list = []
-	for tweet in limit_handled(tweepy.Cursor(api.search,q=search_string).items(100)):
+	for tweet in limit_handled(tweepy.Cursor(api.search,q=search_string).items(30)):
 		tweet_list.append(tweet)
 
 	#We now extract details from the tweet and get the resultant DataFrame
 	tweet_Data = filter_tweets(tweet_list)
 
 
-	(doughnut,sentiment_map) = make_maps(tweet_Data)
+	(doughnut,sentiment_map,sources_plot) = make_maps(tweet_Data)
 	#return tweet_Data
-	return (doughnut,sentiment_map)
+	return (doughnut,sentiment_map,sources_plot)
 
 
 
@@ -141,6 +157,7 @@ def filter_tweets(tweets):
 	tweet_latitude = []
 	tweet_longitude =[]
 	tweet_country = []
+	tweet_source = []
 
 
 
@@ -148,6 +165,9 @@ def filter_tweets(tweets):
 		raw_tweet_text = tweet.text
 		message = TextBlob(unicode(tweet.text))
 		location = tweet.author.location
+		source = tweet.source
+		source = source.encode('utf-8')
+		tweet_source.append(source)
 		# location can be null :: We have to handle that too 
 		if len(location) !=0:
 			(latitude,longitude,country) = geocode_location(location)
@@ -228,6 +248,7 @@ def filter_tweets(tweets):
 	tweet_Data["latitude"] = tweet_latitude
 	tweet_Data["longitude"]= tweet_longitude
 	tweet_Data["country"] = tweet_country
+	tweet_Data["source"] = tweet_source
 
 	
 

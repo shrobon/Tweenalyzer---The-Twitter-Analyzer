@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-	(a,b)=QueryTwitter("Python")
+	(a,b,c)=QueryTwitter("Python")
 	#parse all the relevant information here and send to index.html
 	#return tweetsDataframe.to_html()
 	'''
@@ -19,7 +19,7 @@ def index():
 	sentiments_group = tweetsDataframe['sentiments_group']
 	return render_template('index.html',country=country,latitude=latitude,longitude=longitude,language=language,subjectivity_group=subjectivity_group,sentiments_group=sentiments_group)
 	'''
-	return render_template('index.html',doughnut=json.dumps(a),tweet_map=b)
+	return render_template('index.html',doughnut=json.dumps(a),tweet_map=b,sources_plot=json.dumps(c))
 	#return str(tweetsDataframe)
 
 if __name__ == "__main__":
