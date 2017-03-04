@@ -37,20 +37,32 @@ def limit_handled(cursor):
         	break
 
 
-'''
-def make_maps(tweet_Data):
-	#This function will return the data as required by google maps
-	country = tweetsDataframe['country']
-	latitude = tweetsDataframe['latitude']
-	longitude = tweetsDataframe['longitude']
-	language = tweetsDataframe['language']
-	subjectivity_group = tweetsDataframe['subjectivity_group']
-	sentiments_group = tweetsDataframe['sentiments_group']
 
-	#for pointer map 1
-	for i in length(tweetsDataframe):
-		pass
-'''
+def make_maps(tweetsDataframe):
+	#This function will return the data as required by google maps
+	doughnut = []
+	########################################
+	#for the language plot :: dougnut chart
+	doughnut.append(["Language","Tweets"])
+	lang_count = tweetsDataframe["language"].value_counts()
+	lang_count= lang_count.to_dict()
+	for key,value in lang_count.iteritems():
+		temp = [key,value]
+		doughnut.append(temp)
+	########################################
+
+
+	'''
+	for i in range(0,len(tweetsDataframe)):
+		country = tweetsDataframe['country'][i]
+		latitude = tweetsDataframe['latitude'][i]
+		language = tweetsDataframe['language'][i]
+		subjectivity_group = tweetsDataframe['subjectivity_group'][i]
+		sentiments_group = tweetsDataframe['sentiments_group'][i]
+		
+	'''
+
+	return doughnut
 
 
 def QueryTwitter(search_string):
@@ -77,8 +89,9 @@ def QueryTwitter(search_string):
 	tweet_Data = filter_tweets(tweet_list)
 
 
-	#tup_map_data = make_maps(tweet_Data)
-	return tweet_Data
+	tup_map_data = make_maps(tweet_Data)
+	#return tweet_Data
+	return tup_map_data
 
 
 

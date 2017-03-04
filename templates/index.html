@@ -3,34 +3,26 @@
 <head>
   <title>Tweenalyzer</title>
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+
   <link rel="stylesheet" type="text/css" href="../static/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="../static/assets/css/keen-dashboards.css" />
 
   <!--Map 1 -->
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-  <script type="text/javascript">
-  google.charts.load('current', {'packages':['geochart']});
-  google.charts.setOnLoadCallback(drawRegionsMap);
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load("current", {packages:["corechart"]});
+      google.charts.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable({{doughnut|safe}});
+        var options = {
+          title: 'Tweet language',
+          pieHole: 0.4,
+        };
 
-  function drawRegionsMap() {
-
-    var data = google.visualization.arrayToDataTable([
-      ['Country', 'Popularity'],
-      ['Germany', 200],
-      ['United States', 300],
-      ['Brazil', 400],
-      ['Canada', 500],
-      ['France', 600],
-      ['RU', 700]
-    ]);
-
-    var options = {};
-
-    var chart = new google.visualization.GeoChart(document.getElementById('grid-1-1'));
-
-    chart.draw(data, options);
-  }
-  </script>
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data, options);
+      }
+    </script>
 
 
 
@@ -39,6 +31,7 @@
 
 </head>
 <body class="application">
+
 
   <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
@@ -74,10 +67,14 @@
           </div>
           <div class="chart-stage">
             <div id="grid-1-1">
+
               <img data-src="holder.js/100%x240/white/text:#grid-1-1">
             </div>
           </div>
           <div class="chart-notes">
+
+
+             
             Notes about this chart
           </div>
         </div>
@@ -87,8 +84,8 @@
           <div class="chart-title">
             Cell Title
           </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x240/white">
+          <div class="chart-stage" id="donutchart">
+
           </div>
           <div class="chart-notes">
             Notes about this chart

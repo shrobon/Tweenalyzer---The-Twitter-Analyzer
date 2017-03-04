@@ -25,3 +25,9 @@ Plots:
 5. Subjectivity Scores
 6. ~~ if possible :: Do popularity measure 
 7. Maps tooltip set along with sentiment polarity
+
+Errors to handle :
+
+UnicodeEncodeError
+UnicodeEncodeError: 'ascii' codec can't encode character u'\u3012' in position 1: ordinal not in range(128)
+
