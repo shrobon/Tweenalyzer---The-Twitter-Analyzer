@@ -1,26 +1,22 @@
-from flask import Flask, render_template
+from flask import Flask, render_template,request
 from tweets import QueryTwitter
 import pandas as pd 
 import json 
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/",methods=['GET','POST'])
 def index():
-	(a,b,c)=QueryTwitter("Python")
-	#parse all the relevant information here and send to index.html
-	#return tweetsDataframe.to_html()
-	'''
-	country = tweetsDataframe['country']
-	latitude = tweetsDataframe['latitude']
-	longitude = tweetsDataframe['longitude']
-	language = tweetsDataframe['language']
-	subjectivity_group = tweetsDataframe['subjectivity_group']
-	sentiments_group = tweetsDataframe['sentiments_group']
-	return render_template('index.html',country=country,latitude=latitude,longitude=longitude,language=language,subjectivity_group=subjectivity_group,sentiments_group=sentiments_group)
-	'''
-	return render_template('index.html',doughnut=json.dumps(a),tweet_map=b,sources_plot=json.dumps(c))
-	#return str(tweetsDataframe)
+	if request.method == "GET":
+		(a,b,c)=QueryTwitter("Python")
+		return render_template('index.html',doughnut=json.dumps(a),tweet_map=b,sources_plot=json.dumps(c))
+
+	else:
+		search = request.form["srch-term"]
+		(a,b,c)=QueryTwitter(search)
+		return render_template('index.html',doughnut=json.dumps(a),tweet_map=b,sources_plot=json.dumps(c))
+
+	return "<h1>Something went wrong !! </h1>"
 
 if __name__ == "__main__":
 	app.run(debug=True, port=5000)
