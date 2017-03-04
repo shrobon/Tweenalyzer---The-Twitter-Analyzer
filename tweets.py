@@ -58,7 +58,6 @@ def make_maps(tweetsDataframe):
 
 	########################################
 	#for the sources plot :: 
-	#doughnut.append(["Language","Tweets"])
 	sources_plot.append(["Twitter Client","Users"])
 	source_count = tweetsDataframe["source"].value_counts()[:5][::-1]
 	source_count= source_count.to_dict()
