@@ -19,7 +19,7 @@ def index():
 	sentiments_group = tweetsDataframe['sentiments_group']
 	return render_template('index.html',country=country,latitude=latitude,longitude=longitude,language=language,subjectivity_group=subjectivity_group,sentiments_group=sentiments_group)
 	'''
-	return render_template('index.html',doughnut=json.dumps(a),sentiments_map=json.dumps(b))
+	return render_template('index.html',doughnut=json.dumps(a),tweet_map=b)
 	#return str(tweetsDataframe)
 
 if __name__ == "__main__":

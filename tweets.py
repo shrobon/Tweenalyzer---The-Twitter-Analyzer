@@ -57,15 +57,20 @@ def make_maps(tweetsDataframe):
 
 	########################################
 	#for the sentiment_map plot :: geochart
-	sentiment_map.append(['Lat', 'Long', 'Sentiments'])
+	#sentiment_map.append(['Lat', 'Long', 'Language'])
 	for i in range(0,len(tweetsDataframe)):
 
 		temp= []
 		latitude = tweetsDataframe['latitude'][i]
 		longitude = tweetsDataframe['longitude'][i]
+		language = tweetsDataframe['language'][i]
 		sentiment = tweetsDataframe['sentiments'][i]
-		if sentiment >=-1 and sentiment <=1:
-			temp = [latitude,longitude,sentiment]
+		if latitude == "":
+			continue
+		else:
+
+		#if sentiment >=-1 and sentiment <=1:
+			temp = [latitude,longitude,language,sentiment,"tooltip"]
 			sentiment_map.append(temp)
 
 	
@@ -89,7 +94,7 @@ def QueryTwitter(search_string):
 	api = tweepy.API(auth)
 
 	tweet_list = []
-	for tweet in limit_handled(tweepy.Cursor(api.search,q=search_string).items(10)):
+	for tweet in limit_handled(tweepy.Cursor(api.search,q=search_string).items(100)):
 		tweet_list.append(tweet)
 
 	#We now extract details from the tweet and get the resultant DataFrame
@@ -246,7 +251,7 @@ def geocode_location(loc):
 		longitude= location_result[0]['geometry']['location']['lng']
 		country =location_result[0]['formatted_address'].split(",")
 		country = country[len(country)-1]		# there arises a problem here
-		return (str(latitude),str(longitude),country)
+		return (latitude,longitude,country)
 		
 
 	else:
