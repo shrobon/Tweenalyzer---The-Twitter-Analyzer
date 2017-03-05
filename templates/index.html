@@ -19,10 +19,12 @@
   <!--Map 1-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-      google.charts.load('current', {'packages': ['geochart','corechart','bar']});
+      google.charts.load('current', {'packages': ['geochart','corechart','bar','table']});
       google.charts.setOnLoadCallback(drawChart);
       google.charts.setOnLoadCallback(drawVisualization);
       google.charts.setOnLoadCallback(drawBasic);
+      google.charts.setOnLoadCallback(drawChart1);
+      google.charts.setOnLoadCallback(drawTable);
 
         function drawVisualization() {var data = new google.visualization.DataTable();
            data.addColumn('number', 'LATITUDE');                                
@@ -42,13 +44,14 @@
 
        var options = {
          colorAxis: {colors: ['#ff0000', '#00ff59']},
+         'width':"100%",'height':400,
          displayMode: 'markers', 
          enableRegionInteractivity: 'true', 
          sizeAxis: {minValue: -1, maxValue:1},
          region:'world',
          tooltip: {textStyle: {color: '#444444'}}    
        };
-        var chart = new   google.visualization.GeoChart(document.getElementById('grid-1-1')); 
+        var chart = new   google.visualization.GeoChart(document.getElementById('gridz')); 
        chart.draw(data, options);
        
        }
@@ -60,6 +63,8 @@
         var options = {
           title: 'Tweet language',
           pieHole: 0.3,
+          'width':400,
+          'height':400
         };
 
         var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
@@ -73,6 +78,8 @@ function drawBasic() {
       var data = google.visualization.arrayToDataTable({{sources_plot|safe}});
 
       var options = {
+        'width':600,
+        'height':400,
         title: 'Top 5 Twitter Platforms',
         chartArea: {width: '50%'},
         hAxis: {
@@ -88,6 +95,38 @@ function drawBasic() {
 
       chart.draw(data, options);
     }
+
+    //Map 4 :: Sentiment Map :: Pie Chart
+
+    function drawChart1() {
+
+        // Create the data table.
+        var data = google.visualization.arrayToDataTable({{sentiment_pie|safe}});
+
+        // Set chart options
+        var options = {'title':'Sentiment Analysis of tweets',
+                       'width':400,
+                       'height':400};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('sentiment-pie'));
+        chart.draw(data, options);
+      }
+
+
+      function drawTable() {
+        var data = google.visualization.arrayToDataTable({{table|safe}});
+    
+
+        var table = new google.visualization.Table(document.getElementById('retweet-table'));
+
+        table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+      }
+
+
+
+
+
 
 
     </script>
@@ -133,21 +172,21 @@ function drawBasic() {
   </div>
 
   <div class="container-fluid">
-
     <div class="row">
       <div class="col-sm-8">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Tweet Distribution Map
+            Tweet Distribution Map :: Search Query "{{search}}"
           </div>
           <div class="chart-stage">
-            <div id="grid-1-1">
+            <div id="gridz">
             </div>
           </div>
           <div class="chart-notes">
              
-            Green hue denotes positive tweet , while Red hue denotes negative tweets.
-            -1 Sentiment score means negative while 1 means positive sentiment
+            Green hue denotes positive tweet and Red hue denotes negative tweets.
+            -1 sentiment score means negative while 1 means positive sentiment.
+            (**Showing tweets of users, whose location could be determined**)
           </div>
         </div>
       </div>
@@ -160,7 +199,7 @@ function drawBasic() {
 
           </div>
           <div class="chart-notes">
-            Makes you aware of which languages are used by the queried users
+            See which languages your users are tweeting in.
           </div>
         </div>
       </div>
@@ -170,82 +209,43 @@ function drawBasic() {
       <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Top 5 Tweeting Client Platforms
+            Top 5 Tweeting Client Platforms :: Search Query "{{search}}""
           </div>
           <div class="chart-stage" id="bar-chart" >
           </div>
           <div class="chart-notes">
-            Notes about this chart
+             Get to know which twitter application is most popular.
           </div>
         </div>
       </div>
       <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Cell Title
+            Twitter Sentiment Analysis
           </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
+          <div class="chart-stage" id="sentiment-pie">
+
           </div>
           <div class="chart-notes">
-            Notes about this chart
+            Tweets are given sentiment scores, based on the positive and negative words they contain
           </div>
         </div>
       </div>
       <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Cell Title
+            Top 10 tweets on "{{search}}"
           </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
+          <div class="chart-stage" id="retweet-table">
+
           </div>
           <div class="chart-notes">
-            Notes about this chart
+            Some of the tweets are translated from their original language to English.
           </div>
         </div>
       </div>
 <!-- end of three -->
-      <div class="col-sm-6 col-md-4">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Cell Title
-          </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-4">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Cell Title
-          </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-4">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Cell Title
-          </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
-          </div>
-          <div class="chart-notes">
-            Notes about this chart
-          </div>
-        </div>
-      </div>
-    </div>
+
   </div>
 
 

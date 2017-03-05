@@ -43,6 +43,8 @@ def make_maps(tweetsDataframe):
 	doughnut = []
 	sentiment_map = []
 	sources_plot = []
+	sentiment_pie = []
+	retweet_table = []
 
 	########################################
 	#for the language plot :: dougnut chart
@@ -52,6 +54,17 @@ def make_maps(tweetsDataframe):
 	for key,value in lang_count.iteritems():
 		temp = [key,value]
 		doughnut.append(temp)
+	########################################
+
+
+	########################################
+	#for the Sentiment plot :: pie chart
+	sentiment_pie.append(["Sentiment","Tweets"])
+	sentiment_count = tweetsDataframe["sentiments_group"].value_counts()
+	sentiment_count= sentiment_count.to_dict()
+	for key,value in sentiment_count.iteritems():
+		temp = [key,value]
+		sentiment_pie.append(temp)
 	########################################
 
 
@@ -78,7 +91,8 @@ def make_maps(tweetsDataframe):
 		temp= []
 		latitude = tweetsDataframe['latitude'][i]
 		longitude = tweetsDataframe['longitude'][i]
-		language = tweetsDataframe['language'][i]
+		language = tweetsDataframe["translate"][i]
+		language = language.encode('utf-8')
 		sentiment = tweetsDataframe['sentiments'][i]
 		if latitude == "":
 			continue
@@ -90,7 +104,35 @@ def make_maps(tweetsDataframe):
 
 	
 	########################################
-	return (doughnut,sentiment_map,sources_plot)
+
+
+
+	########################################
+	#Most Famous Tweet Table :: Table_Chart
+	retweet_table.append(["Tweet Text","ReTweets"])
+	df = tweetsDataframe[['translate','retweet_count']].drop_duplicates().sort_values(['retweet_count'],ascending=False)[:10]
+	for key,value in zip(df['translate'],df['retweet_count']):
+		temp = [key,value]
+		retweet_table.append(temp)
+	########################################
+
+
+
+
+
+
+
+
+
+
+
+	return (doughnut,sentiment_map,sources_plot,sentiment_pie,retweet_table)
+
+
+
+
+
+
 
 def QueryTwitter(search_string):
 
@@ -109,16 +151,16 @@ def QueryTwitter(search_string):
 	api = tweepy.API(auth)
 
 	tweet_list = []
-	for tweet in limit_handled(tweepy.Cursor(api.search,q=search_string).items(30)):
+	for tweet in limit_handled(tweepy.Cursor(api.search,q=search_string).items(50)):
 		tweet_list.append(tweet)
 
 	#We now extract details from the tweet and get the resultant DataFrame
 	tweet_Data = filter_tweets(tweet_list)
 
 
-	(doughnut,sentiment_map,sources_plot) = make_maps(tweet_Data)
+	(doughnut,sentiment_map,sources_plot,sentiment_pie,retweet_table) = make_maps(tweet_Data)
 	#return tweet_Data
-	return (doughnut,sentiment_map,sources_plot)
+	return (doughnut,sentiment_map,sources_plot,sentiment_pie,retweet_table)
 
 
 
@@ -137,6 +179,7 @@ def filter_tweets(tweets):
 	#Will contain a single column table containing all the tweet ids
 	tweet_Data = pd.DataFrame(id_list,columns=['id'])
 	tweet_Data["text"] = [tweet.text for tweet in tweets]
+	tweet_Data["retweet_count"]= [tweet.retweet_count for tweet in tweets]
 	#tweet_Data["favourite_count"] = [tweet.favourite_count for tweet in tweets]
 	# Location 
 	#tweet_Data["location"] = [tweet.author.location for tweet in tweets]
@@ -157,6 +200,7 @@ def filter_tweets(tweets):
 	tweet_longitude =[]
 	tweet_country = []
 	tweet_source = []
+	tweet_translation= []
 
 
 
@@ -202,7 +246,8 @@ def filter_tweets(tweets):
 			else:
 				new_message =new_message+current_read
 
-		message = new_message
+		message = new_message ### Change here on :: Added the Translated Text to Database
+		tweet_translation.append(message[:120])
 		message = TextBlob(message)
 		######################################
 
@@ -248,6 +293,7 @@ def filter_tweets(tweets):
 	tweet_Data["longitude"]= tweet_longitude
 	tweet_Data["country"] = tweet_country
 	tweet_Data["source"] = tweet_source
+	tweet_Data["translate"] = tweet_translation
 
 	
 

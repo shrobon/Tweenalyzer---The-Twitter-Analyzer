@@ -8,13 +8,13 @@ app = Flask(__name__)
 @app.route("/",methods=['GET','POST'])
 def index():
 	if request.method == "GET":
-		(a,b,c)=QueryTwitter("Python")
-		return render_template('index.html',doughnut=json.dumps(a),tweet_map=b,sources_plot=json.dumps(c))
+		(a,b,c,d,e)=QueryTwitter("Python")
+		return render_template('index.html',doughnut=json.dumps(a),tweet_map=b,sources_plot=json.dumps(c),sentiment_pie=json.dumps(d),table=json.dumps(e),search="Python")
 
 	else:
 		search = request.form["srch-term"]
-		(a,b,c)=QueryTwitter(search)
-		return render_template('index.html',doughnut=json.dumps(a),tweet_map=b,sources_plot=json.dumps(c))
+		(a,b,c,d,e)=QueryTwitter(search)
+		return render_template('index.html',doughnut=json.dumps(a),tweet_map=b,sources_plot=json.dumps(c),sentiment_pie=json.dumps(d),table=json.dumps(e),search=search)
 
 	return "<h1>Something went wrong !! </h1>"
 
