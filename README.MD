@@ -7,7 +7,7 @@ Tweenalyzer helps you analyze your twitter fanbase by providing a visually pleas
 
 Project Tweenalyzer was completed as a part of the MSc in computing Science course MM802 (Multimedia Networking and Communication at University of Alberta).
 
-# Demo Picture
+# Demo [http://tweenalyzer.herokuapp.com/]
 Search Query was "Python"
 
 ![alt tag](demo.png)
