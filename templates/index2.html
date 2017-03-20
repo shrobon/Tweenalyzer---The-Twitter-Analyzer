@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tweenalyzer</title>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
+
+
+
+  <link rel="stylesheet" type="text/css" href="../static/assets/lib/bootstrap/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="../static/assets/css/keen-dashboards.css" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <!--Map 1-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages': ['geochart','corechart','bar','table']});
+      google.charts.setOnLoadCallback(drawChart);
+      google.charts.setOnLoadCallback(drawVisualization);
+      google.charts.setOnLoadCallback(drawBasic);
+      google.charts.setOnLoadCallback(drawChart1);
+      google.charts.setOnLoadCallback(drawTable);
+
+        function drawVisualization() {var data = new google.visualization.DataTable();
+           data.addColumn('number', 'LATITUDE');
+           data.addColumn('number', 'LONGITUDE');
+           data.addColumn('string', 'DESCRIPTION');
+           data.addColumn('number', 'Value:', 'value');
+           data.addColumn({type:'string', role:'tooltip'});
+           var full = new Array()
+           {% for item in tweet_map %}
+              var arr = {{item|safe}}
+              full.push(arr)
+              //var arr1 = JSON.parse(arr.replace("&#39;","'"));
+
+              //console.log(arr);
+           {% endfor %}
+           data.addRows(full);
+
+       var options = {
+         colorAxis: {colors: ['#ff0000', '#00ff59']},
+         'width':"100%",'height':400,
+         displayMode: 'markers',
+         enableRegionInteractivity: 'true',
+         sizeAxis: {minValue: -1, maxValue:1},
+         region:'world',
+         tooltip: {textStyle: {color: '#444444'}}
+       };
+        var chart = new   google.visualization.GeoChart(document.getElementById('gridz'));
+       chart.draw(data, options);
+
+       }
+
+
+      //Map 2 Donut:: Language
+      function drawChart() {
+        var data = new google.visualization.arrayToDataTable({{doughnut|safe}});
+        var options = {
+          title: 'Tweet language',
+          pieHole: 0.3,
+          'width':400,
+          'height':400
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+        chart.draw(data, options);
+      }
+
+
+      //Map 3 Column Chart :: Sources
+function drawBasic() {
+
+      var data = google.visualization.arrayToDataTable({{sources_plot|safe}});
+
+      var options = {
+        'width':600,
+        'height':400,
+        title: 'Top 5 Twitter Platforms',
+        chartArea: {width: '50%'},
+        hAxis: {
+          title: 'Number of users',
+          minValue: 0
+        },
+        vAxis: {
+          title: 'Twitter Application Platforms'
+        }
+      };
+
+      var chart = new google.visualization.BarChart(document.getElementById('bar-chart'));
+
+      chart.draw(data, options);
+    }
+
+    //Map 4 :: Sentiment Map :: Pie Chart
+
+    function drawChart1() {
+
+        // Create the data table.
+        var data = google.visualization.arrayToDataTable({{sentiment_pie|safe}});
+
+        // Set chart options
+        var options = {'title':'Sentiment Analysis of tweets',
+                       'width':400,
+                       'height':400};
+
+        // Instantiate and draw our chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('sentiment-pie'));
+        chart.draw(data, options);
+      }
+
+
+      function drawTable() {
+        var data = google.visualization.arrayToDataTable({{table|safe}});
+
+
+        var table = new google.visualization.Table(document.getElementById('retweet-table'));
+
+        table.draw(data, {showRowNumber: true, width: '100%', height: '100%'});
+      }
+
+
+
+
+
+
+
+    </script>
+
+
+</head>
+<body class="application">
+
+
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../">
+          <span class="glyphicon glyphicon-chevron-left"></span>Tweenalyzer<span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+        <a class="navbar-brand" href="./">The Twitter Analyzer</a>
+      </div>
+
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-left">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Team</a></li>
+          <li><a href="#">Github Source</a></li>
+        </ul>
+        <div class="col-sm-3 col-md-3 pull-right">
+        <form class="navbar-form" role="search" method="POST" action ="/">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Search" name="srch-term" id="srch-term">
+            <div class="input-group-btn">
+                <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+            </div>
+        </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="row">
+    <div class="imageContainer">Tweenalyzer - The Twitter Analyzer</div>
+
+      <img src="../static/assets/img/bck.png" class="img-fluid" alt="Responsive image">
+</div>
+
+            </div>
+          </div>
+
+
+  </div>
+
+
+    <hr>
+
+    <p class="small text-muted">Built with &#9829; and Hard-Work by Shrobon Biswas & Damayanti Ghosh </p>
+
+  </div>
+
+  <script type="text/javascript" src="../static/assets/lib/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="../static/assets/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <script type="text/javascript" src="../static/assets/lib/holderjs/holder.js"></script>
+  <script>
+    Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
+  </script>
+
+  <script type="text/javascript" src="../static/assets/lib/keen-js/dist/keen.min.js"></script>
+  <script type="text/javascript" src="../static/assets/js/meta.js"></script>
+
+</body>
+</html>

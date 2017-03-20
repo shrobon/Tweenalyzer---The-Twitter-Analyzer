@@ -2,15 +2,15 @@
 
 #__Description__:
 #This script will use twitter api
-#The necessary data will be returned to the server for parsing 
+#The necessary data will be returned to the server for parsing
 #The script will just accept the Query String
 from __future__ import print_function
 import tweepy
 import numpy as np
-import configurations 
+import configurations
 import pandas as pd
-import time 
-import sys 
+import time
+import sys
 #from langdetect import detect
 
 #We will be using TextBlob for Sentiment Analysis
@@ -70,7 +70,7 @@ def make_maps(tweetsDataframe):
 
 
 	########################################
-	#for the sources plot :: 
+	#for the sources plot ::
 	sources_plot.append(["Twitter Client","Users"])
 	source_count = tweetsDataframe["source"].value_counts()[:5][::-1]
 	source_count= source_count.to_dict()
@@ -102,7 +102,7 @@ def make_maps(tweetsDataframe):
 			temp = [latitude,longitude,language,sentiment,"tooltip"]
 			sentiment_map.append(temp)
 
-	
+
 	########################################
 
 
@@ -170,7 +170,7 @@ def QueryTwitter(search_string):
 
 
 
-# Will be creating the dataframes in this function 
+# Will be creating the dataframes in this function
 # Snetiment Analysis
 def filter_tweets(tweets):
 
@@ -181,7 +181,7 @@ def filter_tweets(tweets):
 	tweet_Data["text"] = [tweet.text for tweet in tweets]
 	tweet_Data["retweet_count"]= [tweet.retweet_count for tweet in tweets]
 	#tweet_Data["favourite_count"] = [tweet.favourite_count for tweet in tweets]
-	# Location 
+	# Location
 	#tweet_Data["location"] = [tweet.author.location for tweet in tweets]
 
 
@@ -211,7 +211,7 @@ def filter_tweets(tweets):
 		source = tweet.source
 		source = source.encode('utf-8')
 		tweet_source.append(source)
-		# location can be null :: We have to handle that too 
+		# location can be null :: We have to handle that too
 		if len(location) !=0:
 			(latitude,longitude,country) = geocode_location(location)
 			tweet_latitude.append(latitude)
@@ -295,7 +295,7 @@ def filter_tweets(tweets):
 	tweet_Data["source"] = tweet_source
 	tweet_Data["translate"] = tweet_translation
 
-	
+
 
 	#Let us calculate the sentiment scores
 
@@ -305,7 +305,7 @@ def geocode_location(loc):
 	#Importing the API key for Google Geocode
 	gmaps_api = configurations.google_maps_key
 
-	#Registering our app by sending the API key 
+	#Registering our app by sending the API key
 	gm = googlemaps.Client(key=gmaps_api)
 
 	##################################################################
@@ -318,11 +318,11 @@ def geocode_location(loc):
 		country =location_result[0]['formatted_address'].split(",")
 		country = country[len(country)-1]		# there arises a problem here
 		return (latitude,longitude,country)
-		
+
 
 	else:
 		#store null
 		return ("","","")
-	
+
 	return
 	##################################################################
