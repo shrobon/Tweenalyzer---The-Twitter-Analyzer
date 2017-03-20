@@ -17,7 +17,7 @@ import sys
 #TextBlob is also used for text translation
 from textblob import TextBlob
 import googlemaps
-
+nltk.data.path.append('./nltk_data/')
 
 '''
 This function will help us escape the rate-limit-error we may recieve
